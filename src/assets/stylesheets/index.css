@@ -1,0 +1,61 @@
+@import url('https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap');
+
+* {
+	padding: 0;
+	margin: 0;
+	box-sizing: border-box;
+	font-family: 'Josefin Sans', sans-serif;
+}
+
+:root {
+	--clr-primary: #f2a7ca;
+	/* Text */
+	--clr-text-primary: #fcfcfc;
+	--clr-bg: #0d0d0d;
+	--clr-gray: #ccc;
+	--clr-danger: #e21a1a;
+	--clr-success: #1fa61b;
+}
+
+body {
+	font-size: 1.25rem;
+	background: var(--clr-bg);
+	color: var(--clr-text-primary);
+}
+
+p {
+	font-size: 2rem;
+	color: var(--clr-primary);
+}
+
+input {
+	color: var(--clr-bg);
+	background-color: var(--clr-text-primary);
+	border: none;
+	border-radius: 4px;
+	font-size: 1.25rem;
+	padding: 0.5rem 0.625rem;
+}
+
+input:focus {
+	outline: solid 4px var(--clr-primary);
+}
+
+::placeholder {
+	color: #c0c0c0;
+	opacity: 1;
+}
+
+.container {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	width: min(92vw, 1200px);
+	margin: 0 auto;
+	min-height: 100vh;
+}
+
+.header {
+	margin-top: 1.5rem;
+	margin-bottom: 2rem;
+}
