@@ -8,10 +8,10 @@
 }
 
 :root {
-	--clr-primary: #f2a7ca;
+	--clr-primary: #F2295F;
 	/* Text */
-	--clr-text-primary: #fcfcfc;
-	--clr-bg: #0d0d0d;
+	--clr-light: #F2F2F2;
+	--clr-dark: #131426;
 	--clr-gray: #ccc;
 	--clr-danger: #e21a1a;
 	--clr-success: #1fa61b;
@@ -19,22 +19,22 @@
 
 body {
 	font-size: 1.25rem;
-	background: var(--clr-bg);
-	color: var(--clr-text-primary);
+	background: var(--clr-dark);
+	color: var(--clr-light);
 }
 
 p {
-	font-size: 2rem;
-	color: var(--clr-primary);
+	font-variant: var(--clr-light);
 }
 
 input {
-	color: var(--clr-bg);
-	background-color: var(--clr-text-primary);
+	color: var(--clr-dark);
+	background-color: var(--clr-light);
 	border: none;
 	border-radius: 4px;
 	font-size: 1.25rem;
 	padding: 0.5rem 0.625rem;
+	width: 100%;
 }
 
 input:focus {

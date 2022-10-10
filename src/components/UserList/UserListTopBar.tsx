@@ -1,7 +1,13 @@
 import { FC, useState, useRef } from 'react';
 import { FaChevronDown, FaChevronUp, FaSearch, FaTimes } from 'react-icons/fa';
+import { usersDataType } from './Users';
 
-const UserListTopBar: FC = () => {
+interface UserListTopBarProps {
+	users: usersDataType[] | null;
+	filteredUsers: usersDataType[] | null;
+}
+
+const UserListTopBar: FC<UserListTopBarProps> = ({ users, filteredUsers }) => {
 	const [query, setQuery] = useState<string>('');
 	const [usernameSortOrder, setUsernameSortOrder] = useState<number>(1);
 	const [ageSortOrder, setAgeSortOrder] = useState<number>(1);
@@ -43,12 +49,14 @@ const UserListTopBar: FC = () => {
 				</div>
 			</div>
 
-			<div className="tool-item" onClick={handleUsernameSort}>
-				Username {usernameSortOrder === 1 ? <FaChevronUp /> : <FaChevronDown />}
-			</div>
+			<div className="tool-item-container">
+				<div className="tool-item" onClick={handleUsernameSort}>
+					Username {usernameSortOrder === 1 ? <FaChevronUp /> : <FaChevronDown />}
+				</div>
 
-			<div className="tool-item" onClick={handleAgeSort}>
-				Age {ageSortOrder === 1 ? <FaChevronUp /> : <FaChevronDown />}
+				<div className="tool-item" onClick={handleAgeSort}>
+					Age {ageSortOrder === 1 ? <FaChevronUp /> : <FaChevronDown />}
+				</div>
 			</div>
 		</div>
 	);
