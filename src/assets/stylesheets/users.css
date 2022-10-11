@@ -4,7 +4,6 @@
 	flex-wrap: wrap;
 	justify-content: space-between;
 	align-items: center;
-	margin-bottom: 1rem;
 	row-gap: 1rem;
 }
 
@@ -54,7 +53,6 @@
 	align-items: center;
 	justify-content: center;
 	gap: 1rem;
-	margin-bottom: 1rem;
 	width: 100%;
 }
 
@@ -99,6 +97,20 @@ a.user-card {
 	gap: 1rem;
 }
 
+.paginator-container {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin: 0 auto;
+	gap: 1rem;
+	margin-bottom: 6rem;
+}
+
+.paginator-container p {
+	text-align: center;
+	min-width: 50px;
+}
+
 @media only screen and (max-width: 1200px) {
 	.user-card {
 		width: calc(33.33% - (1rem * (2 / 3)));
@@ -122,6 +134,14 @@ a.user-card {
 	}
 
 	.user-card {
+		width: 100%;
+	}
+
+	.paginator-container {
+		width: 100%;
+	}
+
+	.paginator-container button {
 		width: 100%;
 	}
 }

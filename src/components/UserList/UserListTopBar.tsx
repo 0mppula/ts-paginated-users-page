@@ -1,18 +1,40 @@
-import { FC, useState, useRef } from 'react';
+import { FC, useState, useRef, useEffect } from 'react';
 import { FaChevronDown, FaChevronUp, FaSearch, FaTimes } from 'react-icons/fa';
+import moment from 'moment';
+
 import { usersDataType } from './Users';
 
 interface UserListTopBarProps {
-	users: usersDataType[] | null;
-	filteredUsers: usersDataType[] | null;
+	users: usersDataType[];
+	setUsers: Function;
+	filteredUsers: usersDataType[];
+	setFilteredUsers: Function;
 }
 
-const UserListTopBar: FC<UserListTopBarProps> = ({ users, filteredUsers }) => {
+const UserListTopBar: FC<UserListTopBarProps> = ({
+	users,
+	setUsers,
+	filteredUsers,
+	setFilteredUsers,
+}) => {
 	const [query, setQuery] = useState<string>('');
 	const [usernameSortOrder, setUsernameSortOrder] = useState<number>(1);
 	const [ageSortOrder, setAgeSortOrder] = useState<number>(1);
 
 	const inputRef = useRef() as React.MutableRefObject<HTMLInputElement>;
+
+	useEffect(() => {
+		let newUsers = [...users];
+
+		if (query) {
+			newUsers = newUsers.filter((u) =>
+				u.username.toLowerCase().includes(query.toLowerCase())
+			);
+			setFilteredUsers(newUsers);
+		} else {
+			setFilteredUsers(filteredUsers);
+		}
+	}, [query, setFilteredUsers]);
 
 	const handleSearchClick = () => {
 		if (query) {
@@ -23,15 +45,47 @@ const UserListTopBar: FC<UserListTopBarProps> = ({ users, filteredUsers }) => {
 	};
 
 	const handleUsernameSort = () => {
+		let newUsers = [...users];
+		let newFilteredUsers = [...filteredUsers];
+
+		// 1 IS FOR DECENDING ORDER
 		const nextSortOrder = -1 * usernameSortOrder;
 
+		newFilteredUsers.sort((a, b) =>
+			a.username < b.username ? nextSortOrder : nextSortOrder * -1
+		);
+
+		newUsers.sort((a, b) => (a.username < b.username ? nextSortOrder : nextSortOrder * -1));
+		
+
 		setUsernameSortOrder(nextSortOrder);
+
+		// Sort both the original users and the users filtered with query.
+		setUsers(newUsers);
+		setFilteredUsers(newFilteredUsers);
 	};
 
 	const handleAgeSort = () => {
+		let newUsers = [...users];
+		let newFilteredUsers = [...filteredUsers];
+
+		// -1 IS FOR DECENDING ORDER
 		const nextSortOrder = -1 * ageSortOrder;
 
+		[newUsers, newFilteredUsers].forEach((arr) =>
+			arr.sort((a, b) => {
+				let ageA = moment.duration(moment(new Date()).diff(a.birthday)).years();
+				let ageB = moment.duration(moment(new Date()).diff(b.birthday)).years();
+
+				return ageA > ageB ? nextSortOrder : nextSortOrder * -1;
+			})
+		);
+
 		setAgeSortOrder(nextSortOrder);
+
+		// Sort both the original users and the users filtered with query.
+		setUsers(newUsers);
+		setFilteredUsers(newFilteredUsers);
 	};
 
 	return (
