@@ -1,10 +1,13 @@
 import { FC, useState, useEffect } from 'react';
+import { createAvatar } from '@dicebear/avatars';
+import * as style from '@dicebear/micah';
 
 import UserListTopBar from './UserListTopBar';
 import '../../assets/stylesheets/users.css';
 import UserCard from './UserCard';
 import usersData from '../../assets/data/users.json';
 import Paginator from './Paginator';
+import { cssVar } from '../../helpers/getCssVariable';
 
 export interface usersDataType {
 	id: number;
@@ -36,17 +39,19 @@ const Users: FC = () => {
 	const firstUserIndex = lastUserIndex - usersPerPage;
 
 	useEffect(() => {
-		const usersJSON = usersData;
+		setLoading(true);
+		const usersJSON: usersDataType[] = usersData;
 
 		// Initialize the filtered users array once users are fethced.
-		setLastPage(Math.ceil(usersData?.length / usersPerPage));
+		setLastPage(Math.ceil(usersJSON?.length / usersPerPage));
 
 		// Paginate the users on initial render
-		const currentPageUsers = [...usersData].slice(firstUserIndex, lastUserIndex);
+		const currentPageUsers = [...usersJSON].slice(firstUserIndex, lastUserIndex);
 		setPaginatedUsers(currentPageUsers);
 
 		setOriginalUsers(usersJSON);
 		setUsers(usersJSON);
+		setLoading(false);
 	}, []);
 
 	useEffect(() => {
@@ -74,6 +79,8 @@ const Users: FC = () => {
 			setActivePage((prev) => prev - 1);
 		}
 	};
+
+	if (loading) return <p>Loading....</p>;
 
 	return (
 		<>

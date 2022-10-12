@@ -125,6 +125,47 @@ a.user-card {
 	min-width: 50px;
 }
 
+.user-page-container {
+	width: 100%;
+	display: flex;
+	gap: 0 2rem;
+	flex-wrap: wrap;
+	margin-bottom: 6rem;
+}
+
+.user-page-container div {
+	width: calc(50% - (2rem / 2));
+	display: flex;
+	flex-direction: column;
+	row-gap: 0.75rem;
+	border-radius: 4px;
+	overflow: hidden;
+}
+
+.user-info {
+	font-size: 1.75rem;
+	padding: 1rem;
+	background-color: var(--clr-primary);
+}
+
+.back-button-container {
+	width: 100% !important;
+}
+
+.back-button {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	gap: 0.5rem;
+	text-decoration: none;
+	width: 125px;
+}
+
+.back-button span {
+	margin-bottom: -3px;
+}
+
+/* Media queries */
 @media only screen and (max-width: 1200px) {
 	.user-card {
 		width: calc(33.33% - (1rem * (2 / 3)));
@@ -134,6 +175,18 @@ a.user-card {
 @media only screen and (max-width: 992px) {
 	.user-card {
 		width: calc(50% - (1rem * (1 / 2)));
+	}
+
+	.user-page-container {
+		flex-direction: column;
+	}
+
+	.user-page-container div {
+		width: 100%;
+	}
+
+	.user-info {
+		margin-top: 2rem;
 	}
 }
 
@@ -161,3 +214,4 @@ a.user-card {
 		width: 100%;
 	}
 }
+/* End Media queries */
