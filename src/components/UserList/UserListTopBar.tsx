@@ -7,36 +7,45 @@ import { usersDataType } from './Users';
 interface UserListTopBarProps {
 	users: usersDataType[];
 	setUsers: Function;
-	filteredUsers: usersDataType[];
-	setFilteredUsers: Function;
+	setPaginatedUsers: Function;
+	setUserSortFilterCount: Function;
+	originalUsers: usersDataType[];
+	setOriginalUsers: Function;
 }
 
 const UserListTopBar: FC<UserListTopBarProps> = ({
 	users,
 	setUsers,
-	filteredUsers,
-	setFilteredUsers,
+	setPaginatedUsers,
+	setUserSortFilterCount,
+	originalUsers,
+	setOriginalUsers,
 }) => {
+	// Value of query input field.
 	const [query, setQuery] = useState<string>('');
+	// Value of query after user clicks "search".
+	const [queryFilter, setQueryFilter] = useState<string>('');
 	const [usernameSortOrder, setUsernameSortOrder] = useState<number>(1);
 	const [ageSortOrder, setAgeSortOrder] = useState<number>(1);
 
 	const inputRef = useRef() as React.MutableRefObject<HTMLInputElement>;
 
 	useEffect(() => {
-		let newUsers = [...users];
+		let newUsers = [...originalUsers];
 
-		if (query) {
+		if (queryFilter) {
 			newUsers = newUsers.filter((u) =>
-				u.username.toLowerCase().includes(query.toLowerCase())
+				u.username.toLowerCase().includes(queryFilter.toLowerCase())
 			);
-			setFilteredUsers(newUsers);
+			setUsers(newUsers);
 		} else {
-			setFilteredUsers(filteredUsers);
+			setUsers(originalUsers);
 		}
-	}, [query, setFilteredUsers]);
 
-	const handleSearchClick = () => {
+		setUserSortFilterCount((prev: number) => prev + 1);
+	}, [queryFilter, setPaginatedUsers]);
+
+	const handleSearchInputFieldClick = () => {
 		if (query) {
 			setQuery('');
 		}
@@ -46,61 +55,64 @@ const UserListTopBar: FC<UserListTopBarProps> = ({
 
 	const handleUsernameSort = () => {
 		let newUsers = [...users];
-		let newFilteredUsers = [...filteredUsers];
 
 		// 1 IS FOR DECENDING ORDER
 		const nextSortOrder = -1 * usernameSortOrder;
 
-		newFilteredUsers.sort((a, b) =>
-			a.username < b.username ? nextSortOrder : nextSortOrder * -1
-		);
-
 		newUsers.sort((a, b) => (a.username < b.username ? nextSortOrder : nextSortOrder * -1));
-		
 
 		setUsernameSortOrder(nextSortOrder);
 
-		// Sort both the original users and the users filtered with query.
+		// Sort both the filterable users and the original users.
 		setUsers(newUsers);
-		setFilteredUsers(newFilteredUsers);
+		setOriginalUsers(newUsers);
+		setUserSortFilterCount((prev: number) => prev + 1);
 	};
 
 	const handleAgeSort = () => {
 		let newUsers = [...users];
-		let newFilteredUsers = [...filteredUsers];
 
 		// -1 IS FOR DECENDING ORDER
 		const nextSortOrder = -1 * ageSortOrder;
 
-		[newUsers, newFilteredUsers].forEach((arr) =>
-			arr.sort((a, b) => {
-				let ageA = moment.duration(moment(new Date()).diff(a.birthday)).years();
-				let ageB = moment.duration(moment(new Date()).diff(b.birthday)).years();
+		newUsers.sort((a, b) => {
+			let ageA = moment.duration(moment(new Date()).diff(a.birthday)).years();
+			let ageB = moment.duration(moment(new Date()).diff(b.birthday)).years();
 
-				return ageA > ageB ? nextSortOrder : nextSortOrder * -1;
-			})
-		);
+			return ageA > ageB ? nextSortOrder : nextSortOrder * -1;
+		});
 
 		setAgeSortOrder(nextSortOrder);
 
-		// Sort both the original users and the users filtered with query.
+		// Sort both the filterable users and the original users.
 		setUsers(newUsers);
-		setFilteredUsers(newFilteredUsers);
+		setOriginalUsers(newUsers);
+		setUserSortFilterCount((prev: number) => prev + 1);
+	};
+
+	const handleSearch = () => {
+		setQueryFilter(query);
 	};
 
 	return (
 		<div className="user-list-tools">
-			<div className="tool-input-item">
-				<input
-					ref={inputRef}
-					type="text"
-					value={query}
-					onChange={(e) => setQuery(e.target.value)}
-					placeholder="search by username..."
-				/>
-				<div className="input-icon-container" onClick={handleSearchClick}>
-					{query ? <FaTimes /> : <FaSearch />}
+			<div className="tool-input-item-container">
+				<div className="tool-input-item">
+					<input
+						ref={inputRef}
+						type="text"
+						value={query}
+						onChange={(e) => setQuery(e.target.value)}
+						placeholder="search by username..."
+					/>
+					<div className="input-icon-container" onClick={handleSearchInputFieldClick}>
+						{query ? <FaTimes /> : <FaSearch />}
+					</div>
 				</div>
+
+				<button className="btn" onClick={handleSearch}>
+					Search
+				</button>
 			</div>
 
 			<div className="tool-item-container">

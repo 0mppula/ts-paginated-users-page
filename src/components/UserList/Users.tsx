@@ -21,12 +21,16 @@ export interface usersDataType {
 }
 
 const Users: FC = () => {
+	// Users
+	const [originalUsers, setOriginalUsers] = useState<usersDataType[] | null>(null);
 	const [users, setUsers] = useState<usersDataType[] | null>(null);
-	const [filteredUsers, setFilteredUsers] = useState<usersDataType[] | null>(null);
+	const [paginatedUsers, setPaginatedUsers] = useState<usersDataType[] | null>(null);
+
 	const [loading, setLoading] = useState<boolean>(true);
 	const [activePage, setActivePage] = useState<number>(1);
 	const [usersPerPage, setUsersPerPage] = useState<number>(24);
 	const [lastPage, setLastPage] = useState<number>(1);
+	const [userSortFilterCount, setUserSortFilterCount] = useState<number>(0);
 
 	const lastUserIndex = activePage * usersPerPage;
 	const firstUserIndex = lastUserIndex - usersPerPage;
@@ -39,8 +43,9 @@ const Users: FC = () => {
 
 		// Paginate the users on initial render
 		const currentPageUsers = [...usersData].slice(firstUserIndex, lastUserIndex);
-		setFilteredUsers(currentPageUsers);
+		setPaginatedUsers(currentPageUsers);
 
+		setOriginalUsers(usersJSON);
 		setUsers(usersJSON);
 	}, []);
 
@@ -50,10 +55,13 @@ const Users: FC = () => {
 		if (Array.isArray(users) && users?.length > 0) {
 			const currentPageUsers = [...users].slice(firstUserIndex, lastUserIndex);
 
-			setFilteredUsers(currentPageUsers);
+			// If the users array is filtered update the pagination (page count)
+			setLastPage(Math.ceil(users?.length / usersPerPage));
+
+			setPaginatedUsers(currentPageUsers);
 			window.scrollTo(0, 0);
 		}
-	}, [activePage]);
+	}, [activePage, userSortFilterCount]);
 
 	const incrementPage = () => {
 		if (activePage < lastPage) {
@@ -69,19 +77,21 @@ const Users: FC = () => {
 
 	return (
 		<>
-			{users && filteredUsers && (
+			{users && paginatedUsers && originalUsers && (
 				<>
 					<UserListTopBar
 						users={users}
 						setUsers={setUsers}
-						filteredUsers={filteredUsers}
-						setFilteredUsers={setFilteredUsers}
+						setPaginatedUsers={setPaginatedUsers}
+						setUserSortFilterCount={setUserSortFilterCount}
+						originalUsers={originalUsers}
+						setOriginalUsers={setOriginalUsers}
 					/>
 
 					<hr />
 
 					<div className="users-list-container">
-						{filteredUsers.map?.((user) => (
+						{paginatedUsers.map?.((user) => (
 							<UserCard key={user.id} user={user} />
 						))}
 					</div>
