@@ -23,10 +23,6 @@ body {
 	color: var(--clr-light);
 }
 
-p {
-	font-variant: var(--clr-light);
-}
-
 input {
 	color: var(--clr-dark);
 	background-color: var(--clr-light);
@@ -59,7 +55,7 @@ input:focus {
 }
 
 ::placeholder {
-	color: #c0c0c0;
+	color: var(--clr-gray);
 	opacity: 1;
 }
 
@@ -70,6 +66,7 @@ input:focus {
 	width: min(92vw, 1200px);
 	margin: 0 auto;
 	min-height: 100vh;
+	margin-bottom: 6rem;
 }
 
 .header {

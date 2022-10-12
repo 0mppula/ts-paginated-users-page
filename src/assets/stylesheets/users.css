@@ -1,11 +1,23 @@
 .user-list-tools {
 	width: 100%;
 	display: flex;
-	flex-shrink: 1;
 	flex-wrap: wrap;
 	justify-content: space-between;
 	align-items: center;
 	row-gap: 1rem;
+}
+
+.tool-input-item-container {
+	display: flex;
+	gap: 1rem;
+	width: 55%;
+}
+
+.tool-item-container {
+	display: flex;
+	justify-content: flex-end;
+	gap: 1rem;
+	width: 45%;
 }
 
 .tool-item {
@@ -23,19 +35,6 @@
 
 .tool-item:hover {
 	background-color: var(--clr-primary);
-}
-
-.tool-input-item-container {
-	display: flex;
-	gap: 1rem;
-	width: 55%;
-}
-
-.tool-item-container {
-	display: flex;
-	justify-content: flex-end;
-	gap: 1rem;
-	width: 45%;
 }
 
 .tool-input-item-container button {
@@ -117,7 +116,6 @@ a.user-card {
 	justify-content: center;
 	margin: 0 auto;
 	gap: 1rem;
-	margin-bottom: 6rem;
 }
 
 .paginator-container p {
@@ -130,7 +128,6 @@ a.user-card {
 	display: flex;
 	gap: 0 2rem;
 	flex-wrap: wrap;
-	margin-bottom: 6rem;
 }
 
 .user-page-container div {
