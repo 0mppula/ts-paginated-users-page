@@ -1,4 +1,4 @@
-import { FC, useState, useRef, useEffect } from 'react';
+import { FC, useRef, useEffect, useState } from 'react';
 import { FaChevronDown, FaChevronUp, FaSearch, FaTimes } from 'react-icons/fa';
 import moment from 'moment';
 
@@ -11,6 +11,13 @@ interface UserListTopBarProps {
 	setUserSortFilterCount: Function;
 	originalUsers: usersDataType[];
 	setOriginalUsers: Function;
+	queryFilter: string;
+	setSearchParams: Function;
+	query: string;
+	setQuery: Function;
+	activePage: number;
+	sortOrders: any;
+	setSortOrders: Function;
 }
 
 const UserListTopBar: FC<UserListTopBarProps> = ({
@@ -20,14 +27,15 @@ const UserListTopBar: FC<UserListTopBarProps> = ({
 	setUserSortFilterCount,
 	originalUsers,
 	setOriginalUsers,
+	queryFilter,
+	setSearchParams,
+	query,
+	setQuery,
+	activePage,
+	sortOrders,
+	setSortOrders,
 }) => {
-	// Value of query input field.
-	const [query, setQuery] = useState<string>('');
-	// Value of query after user clicks "search".
-	const [queryFilter, setQueryFilter] = useState<string>('');
-	const [usernameSortOrder, setUsernameSortOrder] = useState<number>(1);
-	const [ageSortOrder, setAgeSortOrder] = useState<number>(1);
-
+	const [latestSort, setLatestSort] = useState('');
 	const inputRef = useRef() as React.MutableRefObject<HTMLInputElement>;
 
 	useEffect(() => {
@@ -37,6 +45,7 @@ const UserListTopBar: FC<UserListTopBarProps> = ({
 			newUsers = newUsers.filter((u) =>
 				u.username.toLowerCase().includes(queryFilter.toLowerCase())
 			);
+
 			setUsers(newUsers);
 		} else {
 			setUsers(originalUsers);
@@ -53,45 +62,113 @@ const UserListTopBar: FC<UserListTopBarProps> = ({
 		inputRef.current.focus();
 	};
 
-	const handleUsernameSort = () => {
+	useEffect(() => {
 		let newUsers = [...users];
 
 		// 1 IS FOR DECENDING ORDER
-		const nextSortOrder = -1 * usernameSortOrder;
+		const nextUsernameSortOrder = sortOrders.find(
+			(obj: any) => obj?.usernameSortOrder
+		)?.usernameSortOrder;
 
-		newUsers.sort((a, b) => (a.username < b.username ? nextSortOrder : nextSortOrder * -1));
+		// -1 IS FOR DECENDING ORDER
+		const nextAgeSortOrder = sortOrders.find((obj: any) => obj?.ageSortOrder)?.ageSortOrder;
 
-		setUsernameSortOrder(nextSortOrder);
+		if (
+			latestSort === 'username' ||
+			(sortOrders && Object?.keys(sortOrders[0] === 'username').length > 0)
+		) {
+			// AGE SORT
+			newUsers.sort((a, b) => {
+				let ageA = moment.duration(moment(new Date()).diff(a.birthday)).years();
+				let ageB = moment.duration(moment(new Date()).diff(b.birthday)).years();
+
+				return ageA > ageB ? nextAgeSortOrder : nextAgeSortOrder * -1;
+			});
+
+			// USERNAME SORT
+			newUsers.sort((a, b) =>
+				a.username < b.username ? nextUsernameSortOrder : nextUsernameSortOrder * -1
+			);
+
+			setSearchParams({
+				queryFilter: query,
+				page: String(activePage),
+				usernameSortOrder: String(nextUsernameSortOrder),
+				ageSortOrder: String(nextAgeSortOrder),
+			});
+		} else if (
+			latestSort === 'age' ||
+			(sortOrders && Object?.keys(sortOrders[0] === 'age').length > 0)
+		) {
+			// USERNAME SORT
+			newUsers.sort((a, b) =>
+				a.username < b.username ? nextUsernameSortOrder : nextUsernameSortOrder * -1
+			);
+
+			// AGE SORT
+			newUsers.sort((a, b) => {
+				let ageA = moment.duration(moment(new Date()).diff(a.birthday)).years();
+				let ageB = moment.duration(moment(new Date()).diff(b.birthday)).years();
+
+				return ageA > ageB ? nextAgeSortOrder : nextAgeSortOrder * -1;
+			});
+
+			setSearchParams({
+				queryFilter: query,
+				page: String(activePage),
+				ageSortOrder: String(nextAgeSortOrder),
+				usernameSortOrder: String(nextUsernameSortOrder),
+			});
+		}
 
 		// Sort both the filterable users and the original users.
 		setUsers(newUsers);
 		setOriginalUsers(newUsers);
 		setUserSortFilterCount((prev: number) => prev + 1);
+	}, [sortOrders]);
+
+	const handleUsernameSort = () => {
+		// 1 IS FOR DECENDING ORDER
+		const nextUsernameSortOrder =
+			-1 *
+			sortOrders.find((obj: any) => {
+				return obj?.usernameSortOrder;
+			})?.usernameSortOrder;
+
+		const nextAgeSortOrder = sortOrders.find((obj: any) => {
+			return obj?.ageSortOrder;
+		})?.ageSortOrder;
+
+		setSortOrders([
+			{ usernameSortOrder: nextUsernameSortOrder },
+			{ ageSortOrder: nextAgeSortOrder },
+		]);
+
+		setLatestSort('username');
 	};
 
 	const handleAgeSort = () => {
-		let newUsers = [...users];
-
 		// -1 IS FOR DECENDING ORDER
-		const nextSortOrder = -1 * ageSortOrder;
+		const nextAgeSortOrder =
+			-1 *
+			sortOrders.find((obj: any) => {
+				return obj?.ageSortOrder;
+			})?.ageSortOrder;
 
-		newUsers.sort((a, b) => {
-			let ageA = moment.duration(moment(new Date()).diff(a.birthday)).years();
-			let ageB = moment.duration(moment(new Date()).diff(b.birthday)).years();
+		const nextUsernameSortOrder = sortOrders.find((obj: any) => {
+			return obj?.usernameSortOrder;
+		})?.usernameSortOrder;
 
-			return ageA > ageB ? nextSortOrder : nextSortOrder * -1;
-		});
+		setSortOrders([
+			{ ageSortOrder: nextAgeSortOrder },
+			{ usernameSortOrder: nextUsernameSortOrder },
+		]);
 
-		setAgeSortOrder(nextSortOrder);
-
-		// Sort both the filterable users and the original users.
-		setUsers(newUsers);
-		setOriginalUsers(newUsers);
-		setUserSortFilterCount((prev: number) => prev + 1);
+		setLatestSort('age');
 	};
 
 	const handleSearch = () => {
-		setQueryFilter(query);
+		setSearchParams({ queryFilter: query, page: '1' });
 	};
 
 	return (
@@ -117,11 +194,22 @@ const UserListTopBar: FC<UserListTopBarProps> = ({
 
 			<div className="tool-item-container">
 				<div className="tool-item" onClick={handleUsernameSort}>
-					Username {usernameSortOrder === 1 ? <FaChevronUp /> : <FaChevronDown />}
+					Username{' '}
+					{+sortOrders.find((obj: any) => obj?.usernameSortOrder)?.usernameSortOrder ===
+					1 ? (
+						<FaChevronUp />
+					) : (
+						<FaChevronDown />
+					)}
 				</div>
 
 				<div className="tool-item" onClick={handleAgeSort}>
-					Age {ageSortOrder === 1 ? <FaChevronUp /> : <FaChevronDown />}
+					Age{' '}
+					{+sortOrders.find((obj: any) => obj?.ageSortOrder)?.ageSortOrder === 1 ? (
+						<FaChevronUp />
+					) : (
+						<FaChevronDown />
+					)}
 				</div>
 			</div>
 		</div>

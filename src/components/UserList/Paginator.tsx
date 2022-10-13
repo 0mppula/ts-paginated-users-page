@@ -14,7 +14,7 @@ const Paginator: FC<PaginatorProps> = ({ activePage, lastPage, incrementPage, de
 				Previous
 			</button>
 			<p>
-				{activePage} / {lastPage}
+				{activePage} / {lastPage || 1}
 			</p>
 			<button className="btn" onClick={() => incrementPage()}>
 				Next

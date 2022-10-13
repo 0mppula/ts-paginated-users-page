@@ -1,13 +1,11 @@
 import { FC, useState, useEffect } from 'react';
-import { createAvatar } from '@dicebear/avatars';
-import * as style from '@dicebear/micah';
+import { useSearchParams } from 'react-router-dom';
 
 import UserListTopBar from './UserListTopBar';
 import '../../assets/stylesheets/users.css';
 import UserCard from './UserCard';
 import usersData from '../../assets/data/users.json';
 import Paginator from './Paginator';
-import { cssVar } from '../../helpers/getCssVariable';
 
 export interface usersDataType {
 	id: number;
@@ -23,7 +21,26 @@ export interface usersDataType {
 	username: string;
 }
 
+export interface sortOrdersType1 {
+	usernameSortOrder: number;
+}
+
+export interface sortOrdersType2 {
+	ageSortOrder: number;
+}
+
 const Users: FC = () => {
+	// Search params
+	const [searchParams, setSearchParams] = useSearchParams();
+	// Value of query input field.
+	const [query, setQuery] = useState<string>('');
+	// Value of query after user clicks "search".
+	const [queryFilter, setQueryFilter] = useState<string>('');
+	const [sortOrders, setSortOrders] = useState<(sortOrdersType1 | sortOrdersType2)[]>([
+		{ usernameSortOrder: 1 },
+		{ ageSortOrder: 1 },
+	]);
+
 	// Users
 	const [originalUsers, setOriginalUsers] = useState<usersDataType[] | null>(null);
 	const [users, setUsers] = useState<usersDataType[] | null>(null);
@@ -37,6 +54,10 @@ const Users: FC = () => {
 
 	const lastUserIndex = activePage * usersPerPage;
 	const firstUserIndex = lastUserIndex - usersPerPage;
+	const activePageParam = Number(searchParams.get('page'));
+	const queryFilterParam = searchParams.get('queryFilter') || '';
+	const UsernamesortParams = searchParams.get('usernameSortOrder');
+	const AgesortParams = searchParams.get('ageSortOrder');
 
 	useEffect(() => {
 		setLoading(true);
@@ -48,16 +69,54 @@ const Users: FC = () => {
 		// Paginate the users on initial render
 		const currentPageUsers = [...usersJSON].slice(firstUserIndex, lastUserIndex);
 		setPaginatedUsers(currentPageUsers);
-
 		setOriginalUsers(usersJSON);
 		setUsers(usersJSON);
+
+		// Add sorting params to state
+		let sortParamsArr: any = [];
+		Object.keys(Object.fromEntries([...Array.from(searchParams)])).forEach((k) => {
+			if (k === 'ageSortOrder' || k === 'usernameSortOrder') {
+				sortParamsArr.push({
+					[k]: +Object.fromEntries([...Array.from(searchParams)])[k],
+				});
+			}
+		});
+
+		setSortOrders(sortParamsArr);
 		setLoading(false);
 	}, []);
 
 	useEffect(() => {
+		if (!loading) {
+			// Only if valid page number param
+			if (activePageParam > 0 && activePageParam <= lastPage) {
+				// Page number params (get the page number from url and save to state)
+				setActivePage(activePageParam);
+				setSortOrders([
+					{ usernameSortOrder: Number(UsernamesortParams) },
+					{ ageSortOrder: Number(AgesortParams) },
+				]);
+			} else {
+				// Default to first page if invalid page number
+				setActivePage(1);
+				setSearchParams({
+					queryFilter: query,
+					page: '1',
+					ageSortOrder: '1',
+					usernameSortOrder: '1',
+				});
+			}
+
+			// Query filter param (get the query param from url and save to state)
+			setQueryFilter(queryFilterParam);
+			setQuery(queryFilterParam);
+		}
+	}, [searchParams, loading]);
+
+	useEffect(() => {
 		// When the user changes pages slice the users array and save the sliced array to filtered
 		// users state.
-		if (Array.isArray(users) && users?.length > 0) {
+		if (Array.isArray(users) && !loading) {
 			const currentPageUsers = [...users].slice(firstUserIndex, lastUserIndex);
 
 			// If the users array is filtered update the pagination (page count)
@@ -66,17 +125,27 @@ const Users: FC = () => {
 			setPaginatedUsers(currentPageUsers);
 			window.scrollTo(0, 0);
 		}
-	}, [activePage, userSortFilterCount]);
+	}, [activePage, userSortFilterCount, loading]);
 
 	const incrementPage = () => {
 		if (activePage < lastPage) {
-			setActivePage((prev) => prev + 1);
+			setSearchParams({
+				queryFilter: query,
+				page: String(activePage + 1),
+				ageSortOrder: '1',
+				usernameSortOrder: '1',
+			});
 		}
 	};
 
 	const decrementPage = () => {
 		if (activePage > 1) {
-			setActivePage((prev) => prev - 1);
+			setSearchParams({
+				queryFilter: query,
+				page: String(activePage - 1),
+				ageSortOrder: '1',
+				usernameSortOrder: '1',
+			});
 		}
 	};
 
@@ -93,6 +162,13 @@ const Users: FC = () => {
 						setUserSortFilterCount={setUserSortFilterCount}
 						originalUsers={originalUsers}
 						setOriginalUsers={setOriginalUsers}
+						queryFilter={queryFilter}
+						setSearchParams={setSearchParams}
+						query={query}
+						setQuery={setQuery}
+						activePage={activePage}
+						sortOrders={sortOrders}
+						setSortOrders={setSortOrders}
 					/>
 
 					<hr />

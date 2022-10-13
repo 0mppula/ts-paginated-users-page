@@ -1,7 +1,7 @@
 import { FC, useState, useEffect } from 'react';
 import { FaChevronLeft } from 'react-icons/fa';
 import moment from 'moment';
-import { useNavigate, useParams, Link } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import usersData from '../../assets/data/users.json';
 import { usersDataType } from '../UserList/Users';
@@ -42,9 +42,9 @@ const UserPage: FC = () => {
 			{user && (
 				<div className="user-page-container">
 					<div className="back-button-container">
-						<Link to="/" className="btn back-button">
+						<button onClick={() => navigate(-1)} className="btn back-button">
 							<FaChevronLeft /> <span>Users</span>
-						</Link>
+						</button>
 					</div>
 
 					<hr />
