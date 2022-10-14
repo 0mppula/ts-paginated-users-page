@@ -10,10 +10,11 @@ const App: FC = () => {
 		<>
 			<div className="container">
 				<BrowserRouter>
-					<Link to="/" className="header">
+					{/* This reset query params by first linking to /reset then redirected to "/" */}
+					<Link to="/reset" className="header">
 						<h1>TypeScript Paginated Users Page</h1>
 					</Link>
-					
+
 					<Routes>
 						<Route path="/" element={<Users />} />
 						<Route path="/user/:userId" element={<UserPage />} />
