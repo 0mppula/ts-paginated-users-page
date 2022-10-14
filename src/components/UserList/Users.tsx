@@ -99,6 +99,7 @@ const Users: FC = () => {
 
 			setPaginatedUsers(currentPageUsers);
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [activePage, userSortFilterCount]);
 
 	useEffect(() => {
