@@ -28,6 +28,7 @@ const Users: FC = () => {
 	const [query, setQuery] = useState<string>('');
 	// Value of query after user clicks "search".
 	const [queryFilter, setQueryFilter] = useState<string>('');
+	const [usernameSortOrder, setUsernameSortOrder] = useState<number>(1);
 
 	// Users
 	const [originalUsers, setOriginalUsers] = useState<usersDataType[] | null>(null);
@@ -44,10 +45,15 @@ const Users: FC = () => {
 	const firstUserIndex = lastUserIndex - usersPerPage;
 	const activePageParam = Number(searchParams.get('page'));
 	const queryFilterParam = searchParams.get('queryFilter') || '';
+	const queryUsernameSortParam = searchParams.get('usernameSortOrder') || 1;
 
 	useEffect(() => {
 		setLoading(true);
-		const usersJSON: usersDataType[] = usersData;
+		const usersJSON: usersDataType[] = [...usersData].sort((a, b) =>
+			a.username > b.username
+				? Number(queryUsernameSortParam)
+				: -1 * Number(queryUsernameSortParam)
+		);
 
 		// Initialize the filtered users array once users are fethced.
 		setLastPage(Math.ceil(usersJSON?.length / usersPerPage));
@@ -67,10 +73,11 @@ const Users: FC = () => {
 			if (activePageParam > 0 && activePageParam <= lastPage) {
 				// Page number params (get the page number from url and save to state)
 				setActivePage(activePageParam);
+				setUsernameSortOrder(Number(queryUsernameSortParam));
 			} else {
 				// Default to first page if invalid page number
 				setActivePage(1);
-				setSearchParams({ queryFilter: query, page: '1' });
+				setSearchParams({ queryFilter: query, page: '1', usernameSortOrder: '1' });
 			}
 
 			// Query filter param (get the query param from url and save to state)
@@ -102,14 +109,22 @@ const Users: FC = () => {
 
 	const incrementPage = () => {
 		if (activePage < lastPage) {
-			setSearchParams({ queryFilter: query, page: String(activePage + 1) });
+			setSearchParams({
+				queryFilter: query,
+				page: String(activePage + 1),
+				usernameSortOrder: String(usernameSortOrder),
+			});
 			window.scrollTo(0, 0);
 		}
 	};
 
 	const decrementPage = () => {
 		if (activePage > 1) {
-			setSearchParams({ queryFilter: query, page: String(activePage - 1) });
+			setSearchParams({
+				queryFilter: query,
+				page: String(activePage - 1),
+				usernameSortOrder: String(usernameSortOrder),
+			});
 			window.scrollTo(0, 0);
 		}
 	};
@@ -132,6 +147,9 @@ const Users: FC = () => {
 						query={query}
 						setQuery={setQuery}
 						setQueryFilter={setQueryFilter}
+						usernameSortOrder={usernameSortOrder}
+						setUsernameSortOrder={setUsernameSortOrder}
+						activePage={activePage}
 					/>
 
 					<hr />

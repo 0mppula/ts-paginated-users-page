@@ -1,5 +1,5 @@
 import { FC, useRef, useEffect } from 'react';
-import { FaSearch, FaTimes } from 'react-icons/fa';
+import { FaSearch, FaTimes, FaChevronUp, FaChevronDown } from 'react-icons/fa';
 
 import { usersDataType } from './Users';
 
@@ -15,10 +15,14 @@ interface UserListTopBarProps {
 	query: string;
 	setQuery: Function;
 	setQueryFilter: Function;
+	usernameSortOrder: number;
+	setUsernameSortOrder: Function;
+	activePage: number;
 }
 
 const UserListTopBar: FC<UserListTopBarProps> = ({
 	setUsers,
+	users,
 	setPaginatedUsers,
 	setUserSortFilterCount,
 	originalUsers,
@@ -27,6 +31,10 @@ const UserListTopBar: FC<UserListTopBarProps> = ({
 	query,
 	setQuery,
 	setQueryFilter,
+	usernameSortOrder,
+	setOriginalUsers,
+	setUsernameSortOrder,
+	activePage,
 }) => {
 	const inputRef = useRef() as React.MutableRefObject<HTMLInputElement>;
 
@@ -56,7 +64,32 @@ const UserListTopBar: FC<UserListTopBarProps> = ({
 
 	const handleSearch = () => {
 		setQueryFilter(query);
-		setSearchParams({ queryFilter: query, page: '1' });
+		setSearchParams({
+			queryFilter: query,
+			page: '1',
+			usernameSortOrder: String(usernameSortOrder),
+		});
+	};
+
+	const handleUsernameSort = () => {
+		let newUsers = [...users];
+
+		// 1 IS FOR DECENDING ORDER
+		const nextSortOrder = -1 * usernameSortOrder;
+
+		newUsers.sort((a, b) => (a.username < b.username ? nextSortOrder * -1 : nextSortOrder));
+
+		setUsernameSortOrder(nextSortOrder);
+
+		// Sort both the filterable users and the original users.
+		setUsers(newUsers);
+		setOriginalUsers(newUsers);
+		setUserSortFilterCount((prev: number) => prev + 1);
+		setSearchParams({
+			queryFilter,
+			page: String(activePage),
+			usernameSortOrder: String(nextSortOrder),
+		});
 	};
 
 	return (
@@ -78,6 +111,12 @@ const UserListTopBar: FC<UserListTopBarProps> = ({
 				<button className="btn" onClick={handleSearch}>
 					Search
 				</button>
+			</div>
+
+			<div className="tool-item-container">
+				<div className="tool-item" onClick={handleUsernameSort}>
+					Username {usernameSortOrder === 1 ? <FaChevronUp /> : <FaChevronDown />}
+				</div>
 			</div>
 		</div>
 	);
