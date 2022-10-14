@@ -108,6 +108,7 @@ const Users: FC = () => {
 			setActivePage(1);
 			setSearchParams({ queryFilter: query, page: '1' });
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [paginatedUsers]);
 
 	const incrementPage = () => {
