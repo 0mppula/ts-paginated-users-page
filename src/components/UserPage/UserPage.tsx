@@ -22,6 +22,14 @@ const UserPage: FC = () => {
 		setUser(activeUser[0]);
 	}, []);
 
+	const handleBackButtonClick = () => {
+		if (window?.history?.state) {
+			navigate(-1);
+		} else {
+			navigate('/', { replace: true });
+		}
+	};
+
 	const {
 		first_name,
 		last_name,
@@ -42,7 +50,7 @@ const UserPage: FC = () => {
 			{user && (
 				<div className="user-page-container">
 					<div className="back-button-container">
-						<button onClick={() => navigate(-1)} className="btn back-button">
+						<button onClick={handleBackButtonClick} className="btn back-button">
 							<FaChevronLeft /> <span>Users</span>
 						</button>
 					</div>

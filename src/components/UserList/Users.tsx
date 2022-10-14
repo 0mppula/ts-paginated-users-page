@@ -21,14 +21,6 @@ export interface usersDataType {
 	username: string;
 }
 
-export interface sortOrdersType1 {
-	usernameSortOrder: number;
-}
-
-export interface sortOrdersType2 {
-	ageSortOrder: number;
-}
-
 const Users: FC = () => {
 	// Search params
 	const [searchParams, setSearchParams] = useSearchParams();
@@ -36,10 +28,6 @@ const Users: FC = () => {
 	const [query, setQuery] = useState<string>('');
 	// Value of query after user clicks "search".
 	const [queryFilter, setQueryFilter] = useState<string>('');
-	const [sortOrders, setSortOrders] = useState<(sortOrdersType1 | sortOrdersType2)[]>([
-		{ usernameSortOrder: 1 },
-		{ ageSortOrder: 1 },
-	]);
 
 	// Users
 	const [originalUsers, setOriginalUsers] = useState<usersDataType[] | null>(null);
@@ -56,8 +44,6 @@ const Users: FC = () => {
 	const firstUserIndex = lastUserIndex - usersPerPage;
 	const activePageParam = Number(searchParams.get('page'));
 	const queryFilterParam = searchParams.get('queryFilter') || '';
-	const UsernamesortParams = searchParams.get('usernameSortOrder');
-	const AgesortParams = searchParams.get('ageSortOrder');
 
 	useEffect(() => {
 		setLoading(true);
@@ -72,17 +58,6 @@ const Users: FC = () => {
 		setOriginalUsers(usersJSON);
 		setUsers(usersJSON);
 
-		// Add sorting params to state
-		let sortParamsArr: any = [];
-		Object.keys(Object.fromEntries([...Array.from(searchParams)])).forEach((k) => {
-			if (k === 'ageSortOrder' || k === 'usernameSortOrder') {
-				sortParamsArr.push({
-					[k]: +Object.fromEntries([...Array.from(searchParams)])[k],
-				});
-			}
-		});
-
-		setSortOrders(sortParamsArr);
 		setLoading(false);
 	}, []);
 
@@ -92,19 +67,10 @@ const Users: FC = () => {
 			if (activePageParam > 0 && activePageParam <= lastPage) {
 				// Page number params (get the page number from url and save to state)
 				setActivePage(activePageParam);
-				setSortOrders([
-					{ usernameSortOrder: Number(UsernamesortParams) },
-					{ ageSortOrder: Number(AgesortParams) },
-				]);
 			} else {
 				// Default to first page if invalid page number
 				setActivePage(1);
-				setSearchParams({
-					queryFilter: query,
-					page: '1',
-					ageSortOrder: '1',
-					usernameSortOrder: '1',
-				});
+				setSearchParams({ queryFilter: query, page: '1' });
 			}
 
 			// Query filter param (get the query param from url and save to state)
@@ -123,29 +89,28 @@ const Users: FC = () => {
 			setLastPage(Math.ceil(users?.length / usersPerPage));
 
 			setPaginatedUsers(currentPageUsers);
-			window.scrollTo(0, 0);
 		}
-	}, [activePage, userSortFilterCount, loading]);
+	}, [activePage, userSortFilterCount]);
+
+	useEffect(() => {
+		// Invalid page numbers in url params
+		if (activePage > 1 && paginatedUsers?.length === 0) {
+			setActivePage(1);
+			setSearchParams({ queryFilter: query, page: '1' });
+		}
+	}, [paginatedUsers]);
 
 	const incrementPage = () => {
 		if (activePage < lastPage) {
-			setSearchParams({
-				queryFilter: query,
-				page: String(activePage + 1),
-				ageSortOrder: '1',
-				usernameSortOrder: '1',
-			});
+			setSearchParams({ queryFilter: query, page: String(activePage + 1) });
+			window.scrollTo(0, 0);
 		}
 	};
 
 	const decrementPage = () => {
 		if (activePage > 1) {
-			setSearchParams({
-				queryFilter: query,
-				page: String(activePage - 1),
-				ageSortOrder: '1',
-				usernameSortOrder: '1',
-			});
+			setSearchParams({ queryFilter: query, page: String(activePage - 1) });
+			window.scrollTo(0, 0);
 		}
 	};
 
@@ -166,9 +131,7 @@ const Users: FC = () => {
 						setSearchParams={setSearchParams}
 						query={query}
 						setQuery={setQuery}
-						activePage={activePage}
-						sortOrders={sortOrders}
-						setSortOrders={setSortOrders}
+						setQueryFilter={setQueryFilter}
 					/>
 
 					<hr />

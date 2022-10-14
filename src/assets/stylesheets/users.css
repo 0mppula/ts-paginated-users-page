@@ -10,31 +10,8 @@
 .tool-input-item-container {
 	display: flex;
 	gap: 1rem;
-	width: 55%;
-}
-
-.tool-item-container {
-	display: flex;
-	justify-content: flex-end;
-	gap: 1rem;
-	width: 45%;
-}
-
-.tool-item {
-	border-radius: 4px;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	gap: 0.5rem;
-	cursor: pointer;
-	padding: 0.5rem 1rem;
-	min-width: 100px;
-	transition: 0.15s all;
-	user-select: none;
-}
-
-.tool-item:hover {
-	background-color: var(--clr-primary);
+	width: 60%;
+	max-width: 660px;
 }
 
 .tool-input-item-container button {
@@ -190,11 +167,7 @@ a.user-card {
 @media only screen and (max-width: 784px) {
 	.tool-input-item-container {
 		width: 100%;
-	}
-
-	.tool-item-container {
-		width: 100%;
-		justify-content: space-around;
+		max-width: none;
 	}
 }
 
