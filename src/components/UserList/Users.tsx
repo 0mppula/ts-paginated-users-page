@@ -37,7 +37,7 @@ const Users: FC = () => {
 
 	const [loading, setLoading] = useState<boolean>(true);
 	const [activePage, setActivePage] = useState<number>(1);
-	const [usersPerPage, setUsersPerPage] = useState<number>(24);
+	const [usersPerPage] = useState<number>(24);
 	const [lastPage, setLastPage] = useState<number>(1);
 	const [userSortFilterCount, setUserSortFilterCount] = useState<number>(0);
 
@@ -65,6 +65,7 @@ const Users: FC = () => {
 		setUsers(usersJSON);
 
 		setLoading(false);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	useEffect(() => {
@@ -84,6 +85,7 @@ const Users: FC = () => {
 			setQueryFilter(queryFilterParam);
 			setQuery(queryFilterParam);
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [searchParams, loading]);
 
 	useEffect(() => {

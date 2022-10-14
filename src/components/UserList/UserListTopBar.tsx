@@ -52,7 +52,8 @@ const UserListTopBar: FC<UserListTopBarProps> = ({
 		}
 
 		setUserSortFilterCount((prev: number) => prev + 1);
-	}, [queryFilter, setPaginatedUsers]);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [queryFilter, setPaginatedUsers, originalUsers, setUsers, setUserSortFilterCount]);
 
 	const handleSearchInputFieldClick = () => {
 		if (query) {
