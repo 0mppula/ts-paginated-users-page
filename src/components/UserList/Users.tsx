@@ -37,10 +37,10 @@ const Users: FC = () => {
 
 	const [loading, setLoading] = useState<boolean>(true);
 	const [activePage, setActivePage] = useState<number>(1);
-	const [usersPerPage] = useState<number>(24);
 	const [lastPage, setLastPage] = useState<number>(1);
 	const [userSortFilterCount, setUserSortFilterCount] = useState<number>(0);
 
+	const usersPerPage: number = 25;
 	const lastUserIndex = activePage * usersPerPage;
 	const firstUserIndex = lastUserIndex - usersPerPage;
 	const activePageParam = Number(searchParams.get('page'));
@@ -111,26 +111,13 @@ const Users: FC = () => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [paginatedUsers]);
 
-	const incrementPage = () => {
-		if (activePage < lastPage) {
-			setSearchParams({
-				queryFilter: query,
-				page: String(activePage + 1),
-				usernameSortOrder: String(usernameSortOrder),
-			});
-			window.scrollTo(0, 0);
-		}
-	};
-
-	const decrementPage = () => {
-		if (activePage > 1) {
-			setSearchParams({
-				queryFilter: query,
-				page: String(activePage - 1),
-				usernameSortOrder: String(usernameSortOrder),
-			});
-			window.scrollTo(0, 0);
-		}
+	const handlePageClick = (event: any) => {
+		setSearchParams({
+			queryFilter: query,
+			page: String(event.selected + 1),
+			usernameSortOrder: String(usernameSortOrder),
+		});
+		window.scrollTo(0, 0);
 	};
 
 	if (loading) return <p>Loading....</p>;
@@ -165,15 +152,13 @@ const Users: FC = () => {
 					</div>
 
 					<hr />
-
-					<Paginator
-						activePage={activePage}
-						lastPage={lastPage}
-						incrementPage={incrementPage}
-						decrementPage={decrementPage}
-					/>
 				</>
 			)}
+			<Paginator
+				activePage={activePage}
+				lastPage={lastPage}
+				handlePageClick={handlePageClick}
+			/>
 		</>
 	);
 };

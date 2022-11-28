@@ -1,25 +1,31 @@
 import { FC } from 'react';
+import ReactPaginate from 'react-paginate';
 
 interface PaginatorProps {
 	activePage: number;
 	lastPage: number;
-	incrementPage: Function;
-	decrementPage: Function;
+	handlePageClick: any;
 }
 
-const Paginator: FC<PaginatorProps> = ({ activePage, lastPage, incrementPage, decrementPage }) => {
+const Paginator: FC<PaginatorProps> = ({ activePage, lastPage, handlePageClick }) => {
 	return (
-		<div className="paginator-container">
-			<button className="btn" onClick={() => decrementPage()}>
-				Previous
-			</button>
-			<p>
-				{activePage} / {lastPage || 1}
-			</p>
-			<button className="btn" onClick={() => incrementPage()}>
-				Next
-			</button>
-		</div>
+		<ReactPaginate
+			containerClassName="paginator-container"
+			breakLabel="..."
+			nextLabel=">"
+			onPageChange={handlePageClick}
+			pageRangeDisplayed={2}
+			marginPagesDisplayed={2}
+			pageCount={lastPage}
+			forcePage={activePage - 1}
+			previousLabel="<"
+			nextLinkClassName="paginator-btn"
+			previousLinkClassName="paginator-btn"
+			pageLinkClassName="paginator-btn"
+			breakLinkClassName="paginator-btn"
+			activeLinkClassName="paginator-btn active"
+			disabledLinkClassName='paginator-btn disabled'
+		/>
 	);
 };
 

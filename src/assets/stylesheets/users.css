@@ -112,15 +112,47 @@ a.user-card {
 
 .paginator-container {
 	display: flex;
+	width: 100%;
 	align-items: center;
 	justify-content: center;
 	margin: 0 auto;
-	gap: 1rem;
+	gap: 0.5rem;
 }
 
-.paginator-container p {
+.paginator-container li {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 48px;
+	height: 48px;
+}
+
+.paginator-btn {
+	border: solid 2px var(--clr-primary) !important;
+	border-radius: 4px;
+	color: var(--clr-light);
+	cursor: pointer;
+	padding: 0.75rem 1rem;
+	font-size: 1.25rem;
 	text-align: center;
-	min-width: 50px;
+	transition: all 0.15s;
+	border: none;
+	width: 100%;
+	width: 100%;
+	user-select: none;
+}
+
+.paginator-btn:hover {
+	background-color: var(--clr-primary);
+}
+
+.paginator-btn.active {
+	background-color: var(--clr-primary);
+}
+
+.paginator-btn.disabled {
+	pointer-events: none;
+	opacity: 0.5;
 }
 
 .user-page-container {
@@ -194,12 +226,30 @@ a.user-card {
 
 	.paginator-container {
 		width: 100%;
-		gap: 8px;
+		gap: 4px;
 	}
 
-	.paginator-container button {
+	.paginator-container li {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		width: 46px;
+		height: 46px;
+	}
+	
+	.paginator-btn {
+		border: solid 2px var(--clr-primary) !important;
+		border-radius: 4px;
+		color: var(--clr-light);
+		cursor: pointer;
+		padding: 0.5rem 0.5rem;
+		font-size: 1rem;
+		text-align: center;
+		transition: all 0.15s;
+		border: none;
 		width: 100%;
-		min-width: 0;
+		width: 100%;
+		user-select: none;
 	}
 
 	.tool-item-container {
