@@ -233,25 +233,9 @@ a.user-card {
 		gap: 4px;
 	}
 
-	.paginator-container li {
-		display: flex;
-		justify-content: center;
-		align-items: center;
-	}
-	
 	.paginator-btn {
-		border: solid 2px var(--clr-primary) !important;
-		border-radius: 4px;
-		color: var(--clr-light);
-		cursor: pointer;
 		padding: 0.5rem 0.5rem;
 		font-size: 1rem;
-		text-align: center;
-		transition: all 0.15s;
-		border: none;
-		width: 100%;
-		width: 100%;
-		user-select: none;
 	}
 
 	.tool-item-container {
