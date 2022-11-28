@@ -123,11 +123,15 @@ a.user-card {
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	width: 48px;
-	height: 48px;
+	width: 100%;
+	height: 100%;
+	max-width: 48px;
 }
 
 .paginator-btn {
+	display: flex;
+	justify-content: center;
+	align-items: center;
 	border: solid 2px var(--clr-primary) !important;
 	border-radius: 4px;
 	color: var(--clr-light);
@@ -233,8 +237,6 @@ a.user-card {
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		width: 46px;
-		height: 46px;
 	}
 	
 	.paginator-btn {
